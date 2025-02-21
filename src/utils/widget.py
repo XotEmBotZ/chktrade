@@ -1,4 +1,4 @@
-from typing import Any, Generator, Iterable
+from typing import Iterable
 
 from rich.console import RenderableType
 from rich.highlighter import Highlighter

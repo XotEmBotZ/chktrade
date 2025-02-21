@@ -2,7 +2,7 @@ import os
 import yaml
 import dotenv
 from textual.validation import Function
-from textual.widgets import Label, Static, Button, Input
+from textual.widgets import Static, Button, Input
 from ..utils.widget import TextInput
 
 
@@ -72,5 +72,5 @@ class Setting(Static):
                     Dumper=yaml.SafeDumper,
                 )
 
-    async def action_reset_config(self):
-        await self.recompose()
+    def action_reset_config(self):
+        self.recompose()  # type: ignore
