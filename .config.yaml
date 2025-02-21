@@ -1,0 +1,2 @@
+configFilePath: ./config/config.yaml
+envFilePath: ./config/.env
