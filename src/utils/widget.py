@@ -7,7 +7,7 @@ from textual.binding import Binding
 from textual.containers import Container
 from textual.suggester import Suggester
 from textual.validation import Validator
-from textual.widgets import Button, Input, Static, Label
+from textual.widgets import Button, Input, Label, Static
 from textual.widgets._input import InputType, InputValidationOn
 
 

@@ -1,8 +1,12 @@
 import os
-import yaml
+
 import dotenv
+import yaml
+from textual import on
+from textual.containers import Horizontal
 from textual.validation import Function
-from textual.widgets import Static, Button, Input
+from textual.widgets import Button, Input, Static
+
 from ..utils.widget import TextInput
 
 
@@ -54,10 +58,15 @@ class Setting(Static):
             id="settingEnvInp",
         )
         yield self.envPath
-        yield Button("Save", id="settingBtnSave", action="save_config")
-        yield Button("Reset", id="settingBtnReset", action="reset_config")
+        horizontalCont = Horizontal()
+        horizontalCont.styles.align_horizontal = "center"
+        with horizontalCont:
+            yield Button("Save", id="settingBtnSave", variant="success")
+            yield Button("Reset", id="settingBtnReset", variant="error")
 
-    def action_save_config(self):
+    @on(Button.Pressed, "#settingBtnSave")
+    def action_save_config(self, event: Button.Pressed):
+        print("ahhaha")
         for inp in self.query(Input):
             if not inp.is_valid:
                 break
@@ -71,6 +80,12 @@ class Setting(Static):
                     stream=f,
                     Dumper=yaml.SafeDumper,
                 )
+            self.notify(
+                message="Configuration Saved",
+                title="Success",
+                timeout=2,
+            )
 
-    def action_reset_config(self):
-        self.recompose()  # type: ignore
+    @on(Button.Pressed, "#settingBtnReset")
+    async def action_reset_config(self, event: Button.Pressed):
+        await self.recompose()  # type: ignore

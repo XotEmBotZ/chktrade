@@ -14,3 +14,7 @@ dependencies = [
 dev = [
     "textual-dev>=1.7.0",
 ]
+
+[tool.ruff]
+# select = ["I"]
+fix = true

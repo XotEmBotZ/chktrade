@@ -1,5 +1,6 @@
 from textual.app import App
-from textual.widgets import Header, Footer, TabbedContent, TabPane, Placeholder
+from textual.widgets import Footer, Header, Placeholder, TabbedContent, TabPane
+
 from .pane.setting import Setting
 
 
