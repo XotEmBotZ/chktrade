@@ -1,5 +1,5 @@
 [project]
-name = "chktrade"
+name = "cktrade"
 version = "0.1.0"
 description = "All in one trade platform"
 readme = "README.md"
@@ -14,6 +14,9 @@ dependencies = [
 dev = [
     "textual-dev>=1.7.0",
 ]
+
+[project.scripts]
+cktrade = "cktrade.main:main"
 
 [tool.ruff]
 # select = ["I"]

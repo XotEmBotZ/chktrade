@@ -20,3 +20,7 @@ class ChkTrade(App):
 
 
 app = ChkTrade
+
+
+def main():
+    app().run()
