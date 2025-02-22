@@ -3,11 +3,12 @@ import os
 import dotenv
 import yaml
 from textual import on
-from textual.containers import Horizontal
+from textual.containers import ItemGrid
 from textual.validation import Function
 from textual.widgets import Button, Input, Static
 
 from ..utils.widget import TextInput
+from ..utils.config import dirs
 
 
 def isFile(path: str) -> bool:
@@ -15,6 +16,8 @@ def isFile(path: str) -> bool:
 
 
 def isValidYaml(path: str) -> bool:
+    if not isFile(path):
+        return False
     try:
         yaml.load(open(path, "rt"), Loader=yaml.SafeLoader)
         return True
@@ -30,14 +33,20 @@ def isValidEnv(path: str):
 
 class Setting(Static):
     def compose(self):
+        config: dict[str, str] = {
+            "configFilePath": str(dirs.user_config_path / "config.yaml"),
+            "envFilePath": str(dirs.user_config_path / ".env"),
+            "dataFilePath": str(dirs.user_data_path / "data.sqlite"),
+        }
         try:
-            with open("./config/yaml", "rt") as f:
-                config = yaml.load(f, Loader=yaml.SafeLoader)
+            with open(".config.yaml", "rt") as f:
+                c = yaml.load(f, Loader=yaml.SafeLoader)
+                print(c)
+                config.update(c)
+                print(config)
         except FileNotFoundError:
-            config = {
-                "configFilePath": "./config/config.yaml",
-                "envFilePath": "./config/.env",
-            }
+            self.notify("App Config not Found Using default values")
+
         self.configPath = TextInput(
             config["configFilePath"],
             lable="Config Gile",
@@ -58,9 +67,17 @@ class Setting(Static):
             id="settingEnvInp",
         )
         yield self.envPath
-        horizontalCont = Horizontal()
+        self.dataPath = TextInput(
+            config["dataFilePath"],
+            lable="Data File",
+            id="settingDataInp",
+        )
+        yield self.dataPath
+
+        horizontalCont = ItemGrid(regular=True, min_column_width=1)
         horizontalCont.styles.align_horizontal = "center"
         with horizontalCont:
+            yield Button("Create File", id="settingBtnCreate", variant="primary")
             yield Button("Save", id="settingBtnSave", variant="success")
             yield Button("Reset", id="settingBtnReset", variant="error")
 
@@ -76,6 +93,7 @@ class Setting(Static):
                     {
                         "configFilePath": self.configPath.value,
                         "envFilePath": self.envPath.value,
+                        "dataFilePath": self.dataPath.value,
                     },
                     stream=f,
                     Dumper=yaml.SafeDumper,
@@ -89,3 +107,9 @@ class Setting(Static):
     @on(Button.Pressed, "#settingBtnReset")
     async def action_reset_config(self, event: Button.Pressed):
         await self.recompose()  # type: ignore
+
+    @on(Button.Pressed, "#settingBtnCreate")
+    def action_create_file(self, event: Button.Pressed):
+        open(self.configPath.value, "wt")
+        open(self.envPath.value, "wt")
+        open(self.dataPath.value, "wb")
