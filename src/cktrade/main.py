@@ -1,14 +1,16 @@
 from textual.app import App
-from textual.widgets import Header, Footer, TabbedContent, TabPane, Placeholder
+from textual.widgets import Footer, Header, TabbedContent, TabPane
+
+from .pane.newTrade import NewTrade
 from .pane.setting import Setting
 
 
 class ChkTrade(App):
     def compose(self):
         yield Header(show_clock=True)
-        with TabbedContent(initial="settingPane"):
+        with TabbedContent(initial="newTradePane"):
             with TabPane("New Trade", id="newTradePane"):
-                yield Placeholder("new trade")
+                yield NewTrade()
             with TabPane("Setting", id="settingPane"):
                 yield Setting()
         yield Footer()
@@ -19,3 +21,7 @@ class ChkTrade(App):
 
 
 app = ChkTrade
+
+
+def main():
+    app().run()
