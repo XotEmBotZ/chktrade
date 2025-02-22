@@ -1,15 +1,14 @@
 from typing import Iterable
 
-from rich.console import ConsoleRenderable, RenderableType, RichCast
+from rich.console import RenderableType
 from rich.highlighter import Highlighter
 from textual import on
 from textual.binding import Binding
 from textual.containers import Container
 from textual.suggester import Suggester
 from textual.validation import Validator
-from textual.widgets import Button, Input, Label, Static, Select
+from textual.widgets import Button, Input, Label, Static
 from textual.widgets._input import InputType, InputValidationOn
-from textual.widgets._select import SelectType, NoSelection, BLANK
 from textual.widget import Widget
 from textual.app import ComposeResult
 

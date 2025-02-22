@@ -1,7 +1,5 @@
-from textual.widgets import Static, TextArea, Input, Placeholder, Button, Select
-from textual.containers import Container, Grid, Horizontal
-from textual import on
-from textual.reactive import reactive
+from textual.widgets import Static, Placeholder, Select
+from textual.containers import Container, Grid
 import ccxt
 
 from ..utils.widget import TextInput, WidgetWithTitle
