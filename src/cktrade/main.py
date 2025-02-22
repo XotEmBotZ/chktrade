@@ -8,7 +8,7 @@ from .pane.setting import Setting
 class ChkTrade(App):
     def compose(self):
         yield Header(show_clock=True)
-        with TabbedContent(initial="settingPane"):
+        with TabbedContent(initial="newTradePane"):
             with TabPane("New Trade", id="newTradePane"):
                 yield NewTrade()
             with TabPane("Setting", id="settingPane"):

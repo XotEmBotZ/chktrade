@@ -1,14 +1,17 @@
 from typing import Iterable
 
-from rich.console import RenderableType
+from rich.console import ConsoleRenderable, RenderableType, RichCast
 from rich.highlighter import Highlighter
 from textual import on
 from textual.binding import Binding
 from textual.containers import Container
 from textual.suggester import Suggester
 from textual.validation import Validator
-from textual.widgets import Button, Input, Label, Static
+from textual.widgets import Button, Input, Label, Static, Select
 from textual.widgets._input import InputType, InputValidationOn
+from textual.widgets._select import SelectType, NoSelection, BLANK
+from textual.widget import Widget
+from textual.app import ComposeResult
 
 
 class TextInput(Static):
@@ -122,3 +125,21 @@ class TextInput(Static):
 
     def action_escape(self) -> None:
         self.app.set_focus(self.app.query_one(Button))
+
+
+class WidgetWithTitle(Container):
+    DEFAULT_CSS = """
+        WidgetWithTitle {
+            height: auto;
+            border: solid $secondary;
+            border-title-align: left;
+        }
+    """
+
+    def __init__(self, widget: Widget, title: str) -> None:
+        super().__init__()
+        self._widget = widget
+        self.border_title = title
+
+    def compose(self) -> ComposeResult:
+        yield self._widget
