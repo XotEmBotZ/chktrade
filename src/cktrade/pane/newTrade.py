@@ -1,6 +1,7 @@
 from textual import on
-from textual.widgets import Static, Placeholder, Select, Switch
+from textual.widgets import Static, Placeholder, Select, Switch, Input
 from textual.containers import Container, Grid, Horizontal
+from textual.validation import Function
 import ccxt
 
 from ..utils.widget import TextInput, WidgetWithTitle
@@ -34,30 +35,75 @@ class InpContainer(Static):
             tickerCont.styles.grid_size_columns = 2
             tickerCont.styles.height = "auto"
             with tickerCont:
-                yield TextInput(label="Ticker", mapper=lambda x: x.upper())
+                yield TextInput(
+                    label="Ticker",
+                    mapper=lambda x: x.upper(),
+                    validators=(
+                        Function(lambda x: bool(x), "Empty Value not allowed"),
+                    ),
+                    id="tickerInp",
+                )
                 yield WidgetWithTitle(
-                    Select(options=tuple(map(lambda x: (x, x), ccxt.exchanges))),
+                    Select(
+                        options=tuple(map(lambda x: (x, x), ccxt.exchanges)),
+                        allow_blank=False,
+                        id="exchageInp",
+                    ),
                     title="Exchange",
                 )
             orderCont = Horizontal()
             orderCont.styles.height = "auto"
             with orderCont:
-                dirSwitch = WidgetWithTitle(Switch(False), title="L/S")
+                dirSwitch = WidgetWithTitle(Switch(True), title="S/L")
                 dirSwitch.styles.width = "auto"
                 yield dirSwitch
                 yield WidgetWithTitle(
-                    Select(options=(("Market", "market"), ("Limit", "limit"))),
+                    Select(
+                        options=(("Market", "market"), ("Limit", "limit")),
+                        allow_blank=False,
+                        id="orderTypeInp",
+                    ),
                     title="Order",
                 )
             priceCont = Grid()
             priceCont.styles.grid_size_columns = 4
             priceCont.styles.height = "auto"
             with priceCont:
-                yield TextInput(label="Price", classes="priceInp")
-                yield TextInput(label="Quantity", classes="priceInp")
-                yield TextInput(label="Size", disabled=True, classes="priceInp")
-                yield TextInput(label="StopLoss", classes="priceInp")
+                yield TextInput(
+                    label="Price",
+                    type="number",
+                    classes="priceInp",
+                    id="priceInp",
+                )
+                yield TextInput(
+                    label="Quantity",
+                    type="number",
+                    classes="priceInp",
+                    id="priceQtyInp",
+                )
+                yield TextInput(
+                    label="Size",
+                    disabled=True,
+                    type="number",
+                    classes="priceInp",
+                    id="priceSizeInp",
+                )
+                yield TextInput(
+                    label="StopLoss",
+                    type="number",
+                    classes="priceInp",
+                    id="priceSLInp",
+                )
 
-    @on(TextInput.Changed, ".priceInp")
+    @on(Input.Changed, ".priceInp")
     def setQuantity(self, event: TextInput.Changed):
-        print(event.value)
+        if (
+            self.query_exactly_one("#priceInp", Input).is_valid
+            and self.query_exactly_one("#priceQtyInp", Input).is_valid
+            and self.query_exactly_one("#priceInp", Input).value
+            and self.query_exactly_one("#priceQtyInp", Input).value
+        ):
+            self.query_exactly_one("#priceSizeInp", Input).value = str(
+                float(self.query_exactly_one("#priceInp", Input).value)
+                * float(self.query_exactly_one("#priceQtyInp", Input).value)
+            )
