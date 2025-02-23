@@ -1,4 +1,5 @@
 from typing import Iterable
+from collections.abc import Callable
 
 from rich.console import RenderableType
 from rich.highlighter import Highlighter
@@ -28,7 +29,7 @@ class TextInput(Static):
         placeholder: str = "",
         highlighter: Highlighter | None = None,
         password: bool = False,
-        lable: str | None = None,
+        label: str | None = None,
         restrict: str | None = None,
         type: InputType = "text",  # type: ignore
         max_length: int = 0,
@@ -42,13 +43,14 @@ class TextInput(Static):
         classes: str | None = None,
         disabled: bool = False,
         tooltip: RenderableType | None = None,
+        mapper: Callable[[str], str] | None = None,
     ):
         super().__init__()
         self.cust_value = value
         self.cust_placeholder = placeholder
         self.cust_highlighter = highlighter
         self.cust_password = password
-        self.cust_lable = lable
+        self.cust_lable = label
         self.cust_restrict = restrict
         self.cust_type = type
         self.cust_max_length = max_length
@@ -62,6 +64,7 @@ class TextInput(Static):
         self.cust_classes = classes
         self.cust_disabled = disabled
         self.cust_tooltip = tooltip
+        self.mapper = mapper
 
     DEFAULT_CSS = """
         .TextInputClass {
@@ -110,7 +113,9 @@ class TextInput(Static):
 
     @on(Input.Changed)
     def setValue(self, event: Input.Changed):
-        self.value = event.value
+        if self.mapper:
+            self.inp.value = self.mapper(event.value)
+        self.value = self.inp.value
 
     @on(Input.Changed)
     def show_error(self, event: Input.Changed):
@@ -132,6 +137,7 @@ class WidgetWithTitle(Container):
             height: auto;
             border: solid $secondary;
             border-title-align: left;
+            # width: auto;
         }
     """
 

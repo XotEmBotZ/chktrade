@@ -49,7 +49,7 @@ class Setting(Static):
 
         self.configPath = TextInput(
             config["configFilePath"],
-            lable="Config Gile",
+            label="Config Gile",
             validators=[
                 Function(isFile, "File is not present"),
                 Function(isValidYaml, "Not a valid yaml file"),
@@ -59,7 +59,7 @@ class Setting(Static):
         yield self.configPath
         self.envPath = TextInput(
             config["envFilePath"],
-            lable="ENV File",
+            label="ENV File",
             validators=[
                 Function(isFile, "File is not present"),
                 Function(isValidEnv, "Not a valid env file"),
@@ -69,7 +69,7 @@ class Setting(Static):
         yield self.envPath
         self.dataPath = TextInput(
             config["dataFilePath"],
-            lable="Data File",
+            label="Data File",
             id="settingDataInp",
         )
         yield self.dataPath
