@@ -2,20 +2,23 @@ from typing import Literal, Optional
 from pydantic import BaseModel, Field, model_validator
 
 
-class Options(BaseModel):
+class CustomInputBase(BaseModel):
     title: str
     timeout: int = 0
+    popup: Optional[str] = None
 
 
-class NewTradeCustomInputs(BaseModel):
-    title: str
+class NewTradeCustomInputs(CustomInputBase):
     type: Literal["option"] | Literal["bool"]
-    timeout: int = 0
-    options: Optional[list] = None
+    options: Optional[list[CustomInputBase]] = None
 
     @model_validator(mode="after")
     def validate_timeout(self):
         if self.type == "option":
+            if self.popup:
+                raise ValueError(
+                    "Popup is not supported globally for option type. Kindly use popup in individual options"
+                )
             if self.timeout:
                 raise ValueError(
                     "Timeout is not supported globally for option type. Kindly use timeout in individual options"
@@ -35,13 +38,10 @@ class AppConfig(BaseModel):
 
 
 if __name__ == "__main__":
-    from pprint import pprint
     import yaml
 
-    pprint(
-        AppConfig(
-            **yaml.safe_load(
-                open("config/config.yaml"),
-            )
-        ).model_dump_json()
+    a = AppConfig(
+        **yaml.safe_load(
+            open("config/config.yaml"),
+        )
     )
