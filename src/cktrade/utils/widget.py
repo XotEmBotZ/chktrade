@@ -5,13 +5,14 @@ from rich.console import RenderableType
 from rich.highlighter import Highlighter
 from textual import on
 from textual.binding import Binding
-from textual.containers import Container
+from textual.containers import Container, Vertical
 from textual.suggester import Suggester
 from textual.validation import Validator
 from textual.widgets import Button, Input, Label, Static
 from textual.widgets._input import InputType, InputValidationOn
 from textual.widget import Widget
 from textual.app import ComposeResult
+from textual.screen import ModalScreen
 
 
 class TextInput(Static):
@@ -148,3 +149,31 @@ class WidgetWithTitle(Container):
 
     def compose(self) -> ComposeResult:
         yield self._widget
+
+
+class TextPopup(ModalScreen):
+    def __init__(self, text: str, timeout: int, *args, **kwargs):
+        self.text = text
+        self.timeout = timeout
+        super().__init__(*args, **kwargs)
+
+    def on_mount(self):
+        self.set_timer(self.timeout, self.enableBtn)
+        self.styles.align = ("center", "middle")
+
+    def compose(self) -> ComposeResult:
+        container = Vertical()
+        container.styles.height = "auto"
+        container.styles.width = "auto"
+        container.styles.padding = (1, 5)
+        container.styles.background = self.app.theme_variables["surface"]
+        with container:
+            yield Label(self.text)
+            yield Button("Understood!", disabled=True, variant="error")
+
+    def enableBtn(self):
+        self.query_exactly_one(Button).disabled = False
+        self.set_focus(self.query_exactly_one(Button))
+
+    def on_button_pressed(self, event: Button.Pressed) -> None:
+        self.app.pop_screen()
