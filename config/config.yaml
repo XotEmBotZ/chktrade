@@ -1,0 +1,25 @@
+new_trade:
+  custom_inputs:
+    - title: setup
+      type: option
+      options:
+        - title: News
+          timeout: 34s
+        - title: FOMO
+          timeout: 34
+        - title: Test
+          # timeout: 34
+    - title: Is BTC Strong?
+      type: bool
+      timeout: 23
+    - title: Is SPX Strong?
+      type: bool
+      timeout: 23
+    - title: Is There Bad News
+      type: bool
+      timeout: 23
+  checklist:
+    - Abc
+    - Test
+    
+    

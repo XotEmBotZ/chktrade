@@ -7,6 +7,7 @@ requires-python = ">=3.13"
 dependencies = [
     "ccxt>=4.4.61",
     "platformdirs>=4.3.6",
+    "pydantic>=2.10.6",
     "python-dotenv>=1.0.1",
     "pyyaml>=6.0.2",
     "textual>=2.1.0",
