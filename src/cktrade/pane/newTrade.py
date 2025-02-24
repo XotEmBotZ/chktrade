@@ -23,7 +23,7 @@ class NewTrade(Static):
         with self.gridWidget:
             self.inpCont = Container(id="newTradeInpCont")
             with self.inpCont:
-                yield InpContainer()
+                yield WidgetWithTitle(InpContainer(), title="Order Details")
             with Container():
                 yield Placeholder("2")
 
