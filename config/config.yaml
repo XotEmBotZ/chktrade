@@ -1,6 +1,7 @@
 new_trade:
   custom_inputs:
-    - title: setup
+    setup:
+      title: setup
       type: option
       options:
         - title: News
@@ -10,15 +11,28 @@ new_trade:
           timeout: 34
         - title: Test
           popup: Nope
-    - title: Is BTC Strong?
+    btcStrong:
+      title: Is BTC Strong?
       type: bool
       popup: Nope
       timeout: 23
-    - title: Is SPX Strong?
+    spx:
+      title: Is SPX Strong?
       type: bool
       timeout: 23
       popup: Nope
-    - title: Is There Bad News
+    badNews:
+      title: Is There Bad News
+      type: bool
+      timeout: 23
+      popup: Nope
+    badNews2:
+      title: Is There Bad News
+      type: bool
+      timeout: 23
+      popup: Nope
+    badNews3:
+      title: Is There Bad News
       type: bool
       timeout: 23
       popup: Nope

@@ -6,6 +6,7 @@ from textual import on
 from textual.containers import ItemGrid
 from textual.validation import Function
 from textual.widgets import Button, Input, Static
+from textual.message import Message
 
 from ..utils.widget import TextInput
 from ..utils.config import dirs
@@ -32,6 +33,8 @@ def isValidEnv(path: str):
 
 
 class Setting(Static):
+    class Changed(Message): ...
+
     def compose(self):
         config: dict[str, str] = {
             "configFilePath": str(dirs.user_config_path / "config.yaml"),
@@ -81,9 +84,11 @@ class Setting(Static):
             yield Button("Save", id="settingBtnSave", variant="success")
             yield Button("Reset", id="settingBtnReset", variant="error")
 
+    def config_changed(self):
+        self.post_message(self.Changed())
+
     @on(Button.Pressed, "#settingBtnSave")
     def action_save_config(self, event: Button.Pressed):
-        print("ahhaha")
         for inp in self.query(Input):
             if not inp.is_valid:
                 break
@@ -103,6 +108,7 @@ class Setting(Static):
                 title="Success",
                 timeout=2,
             )
+            self.config_changed()
 
     @on(Button.Pressed, "#settingBtnReset")
     async def action_reset_config(self, event: Button.Pressed):

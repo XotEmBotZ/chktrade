@@ -29,8 +29,14 @@ class NewTradeCustomInputs(CustomInputBase):
 
 
 class NewTradeConfig(BaseModel):
-    customInputs: list[NewTradeCustomInputs] = Field(alias="custom_inputs")
+    customInputs: dict[str, NewTradeCustomInputs] = Field(alias="custom_inputs")
     checklist: list[str] = Field(alias="checklist")
+
+    @model_validator(mode="after")
+    def validate_model(self):
+        if any([" " in inp for inp in self.customInputs.keys()]):
+            raise ValueError("Custom input keys are not valid")
+        return self
 
 
 class AppConfig(BaseModel):
@@ -39,6 +45,13 @@ class AppConfig(BaseModel):
 
 if __name__ == "__main__":
     import yaml
+    from pprint import pprint
+
+    pprint(
+        yaml.safe_load(
+            open("config/config.yaml"),
+        )
+    )
 
     a = AppConfig(
         **yaml.safe_load(

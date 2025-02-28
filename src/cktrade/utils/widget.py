@@ -8,11 +8,21 @@ from textual.binding import Binding
 from textual.containers import Container, Vertical
 from textual.suggester import Suggester
 from textual.validation import Validator
-from textual.widgets import Button, Input, Label, Static
+from textual.widgets import (
+    Button,
+    Input,
+    Label,
+    Static,
+    RadioButton,
+    RadioSet,
+    Checkbox,
+)
 from textual.widgets._input import InputType, InputValidationOn
 from textual.widget import Widget
 from textual.app import ComposeResult
 from textual.screen import ModalScreen
+
+from .models import CustomInputBase, NewTradeCustomInputs
 
 
 class TextInput(Static):
@@ -132,23 +142,24 @@ class TextInput(Static):
         self.app.set_focus(self.app.query_one(Button))
 
 
-class WidgetWithTitle(Container):
+class WidgetWithTitle(Widget):
     DEFAULT_CSS = """
         WidgetWithTitle {
             height: auto;
+            width: auto;
             border: solid $secondary;
             border-title-align: left;
             # width: auto;
         }
     """
 
-    def __init__(self, widget: Widget, title: str) -> None:
-        super().__init__()
-        self._widget = widget
+    def __init__(self, *args, **kwargs) -> None:
+        title = None
+        if "title" in kwargs:
+            title = kwargs["title"]
+            del kwargs["title"]
+        super().__init__(*args, **kwargs)
         self.border_title = title
-
-    def compose(self) -> ComposeResult:
-        yield self._widget
 
 
 class TextPopup(ModalScreen):
@@ -177,3 +188,23 @@ class TextPopup(ModalScreen):
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         self.app.pop_screen()
+
+
+def radioSetCreator(title: str, options: list[CustomInputBase], id: str):
+    return WidgetWithTitle(
+        RadioSet(
+            *[
+                RadioButton(
+                    label=btn.title,
+                    id=btn.title.replace(" ", ""),
+                )
+                for btn in options
+            ],
+            id=id,
+        ),
+        title=title,
+    )
+
+
+def switchCreator(title: str, id: str):
+    return Checkbox(title, id=id)
