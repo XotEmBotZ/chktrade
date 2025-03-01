@@ -1,41 +1,71 @@
 new_trade:
   custom_inputs:
-    setup:
-      title: setup
-      type: option
-      options:
-        - title: News
-          timeout: 3
-          popup: Nope
-        - title: FOMO
-          timeout: 34
-        - title: Test
-          popup: Nope
-    btcStrong:
-      title: Is BTC Strong?
-      type: bool
-      popup: Nope
-      timeout: 23
-    spx:
-      title: Is SPX Strong?
-      type: bool
-      timeout: 23
-      popup: Nope
-    badNews:
-      title: Is There Bad News
-      type: bool
-      timeout: 23
-      popup: Nope
-    badNews2:
-      title: Is There Bad News
-      type: bool
-      timeout: 23
-      popup: Nope
-    badNews3:
-      title: Is There Bad News
-      type: bool
-      timeout: 23
-      popup: Nope
+    options:
+      setup:
+        title: setup
+        options:
+          news:
+            title: News
+            timeout: 3
+            popup: Nope
+          fomo:
+            title: FOMOFOMOFOMOFOMOFOMOFOMO
+            timeout: 34
+          test1:
+            title: Test
+            popup: Nope
+          test2:
+            title: Test
+            popup: Nope
+          test3:
+            title: Test
+            popup: Nope
+          test4:
+            title: Test
+            popup: Nope
+      setup2:
+        title: setup
+        options:
+          news:
+            title: News
+            timeout: 3
+            popup: Nope
+          fomo:
+            title: FOMOFOMOFOMOFOMOFOMOFOMO
+            timeout: 34
+          test1:
+            title: Test
+            popup: Nope
+          test2:
+            title: Test
+            popup: Nope
+          test3:
+            title: Test
+            popup: Nope
+          test4:
+            title: Test
+            popup: Nope
+    bools:
+      btcStrong:
+        title: Is BTC Strong?
+        popup: Nope
+        timeout: 23
+      spx:
+        title: Is SPX Strong?
+        timeout: 23
+        popup: Nope
+      badNews:
+        title: Is There Bad News
+        timeout: 23
+        popup: Nope
+      badNews2:
+        title: Is There Bad News
+        timeout: 23
+        popup: Nope
+      badNews3:
+        title: Is There Bad News
+        timeout: 23
+        popup: Nope
   checklist:
     - Abc
     - Test

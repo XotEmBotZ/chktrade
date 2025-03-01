@@ -1,12 +1,25 @@
 from textual import on
 from textual.widgets import Static, Placeholder, Select, Switch, Input
-from textual.containers import Container, Grid, Horizontal, VerticalScroll, ItemGrid
+from textual.containers import (
+    Container,
+    Grid,
+    Horizontal,
+    VerticalScroll,
+    ItemGrid,
+    HorizontalScroll,
+)
 from textual.validation import Function
 import ccxt
 
-from ..utils.models import AppConfig
+from ..utils.models import AppConfig, NewTradeConfig
 
-from ..utils.widget import TextInput, WidgetWithTitle, radioSetCreator, switchCreator
+from ..utils.widget import (
+    TextInput,
+    WidgetWithTitle,
+    boolsInputCreator,
+    optionsInputCreator,
+    radioSetCreator,
+)
 
 
 class NewTrade(Static):
@@ -38,7 +51,7 @@ class NewTrade(Static):
 
 class InpContainer(Static):
     def __init__(self, appConfig: AppConfig):
-        self.appConfig: AppConfig = appConfig
+        self.config: NewTradeConfig = appConfig.newTradeConfig
         super().__init__()
 
     def compose(self):
@@ -108,20 +121,23 @@ class InpContainer(Static):
                         id="priceSLInp",
                     )
             with WidgetWithTitle(title="Procedure"):
-                grid = Container()
+                grid = Grid()
+                grid.styles.height = "auto"
+                if self.config.customInputs.options and self.config.customInputs.bools:
+                    grid.styles.grid_size_columns = 2
+                    grid.styles.grid_columns = ("1fr", "2fr")
+                else:
+                    grid.styles.grid_size_columns = 1
+                    grid.styles.grid_columns = ("1fr",)
                 with grid:
-                    for (
-                        custInpId,
-                        custInpVal,
-                    ) in self.appConfig.newTradeConfig.customInputs.items():
-                        if custInpVal.type == "option" and custInpVal.options:
-                            yield radioSetCreator(
-                                title=custInpVal.title.capitalize(),
-                                options=custInpVal.options,
-                                id=custInpId,
-                            )
-                        elif custInpVal.type == "bool":
-                            yield switchCreator(custInpVal.title, id=custInpId)
+                    if self.config.customInputs.options:
+                        yield optionsInputCreator(
+                            "optionCont", self.config.customInputs.options
+                        )
+                    if self.config.customInputs.bools:
+                        yield boolsInputCreator(
+                            "boolsCont", self.config.customInputs.bools
+                        )
 
     @on(Input.Changed, ".priceInp")
     def setQuantity(self, event: TextInput.Changed):

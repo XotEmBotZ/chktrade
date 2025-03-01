@@ -5,7 +5,7 @@ from rich.console import RenderableType
 from rich.highlighter import Highlighter
 from textual import on
 from textual.binding import Binding
-from textual.containers import Container, Vertical
+from textual.containers import Container, Vertical, Grid
 from textual.suggester import Suggester
 from textual.validation import Validator
 from textual.widgets import (
@@ -22,7 +22,7 @@ from textual.widget import Widget
 from textual.app import ComposeResult
 from textual.screen import ModalScreen
 
-from .models import CustomInputBase, NewTradeCustomInputs
+from .models import CustomInputs
 
 
 class TextInput(Static):
@@ -190,15 +190,19 @@ class TextPopup(ModalScreen):
         self.app.pop_screen()
 
 
-def radioSetCreator(title: str, options: list[CustomInputBase], id: str):
+def radioSetCreator(
+    id: str,
+    title: str,
+    options: dict[str, CustomInputs.CustomOptionsInput.CustomOption],
+):
     return WidgetWithTitle(
         RadioSet(
             *[
                 RadioButton(
                     label=btn.title,
-                    id=btn.title.replace(" ", ""),
+                    id=btnId.replace(" ", ""),
                 )
-                for btn in options
+                for btnId, btn in options.items()
             ],
             id=id,
         ),
@@ -206,5 +210,28 @@ def radioSetCreator(title: str, options: list[CustomInputBase], id: str):
     )
 
 
-def switchCreator(title: str, id: str):
-    return Checkbox(title, id=id)
+def optionsInputCreator(id: str, optionInp: dict[str, CustomInputs.CustomOptionsInput]):
+    c = Container(
+        *[
+            radioSetCreator(
+                id=optionId,
+                title=option.title,
+                options=option.options,
+            )
+            for optionId, option in optionInp.items()
+        ],
+        id=id,
+    )
+    c.styles.height = "auto"
+    return c
+
+
+def boolsInputCreator(id: str, boolsInp: dict[str, CustomInputs.CustomBoolsInput]):
+    g = Grid(
+        *[Checkbox(boolInp.title, id=boolId) for boolId, boolInp in boolsInp.items()],
+        id=id,
+    )
+    g.styles.grid_size_columns = 3
+    g.styles.grid_gutter_horizontal = 1
+    g.styles.height = "auto"
+    return g
